@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from main import gen_pass
+import random
+import os
+import requests
 
 # Membaca token dari file token.txt
 with open("token.txt", "r") as f:
@@ -20,7 +23,7 @@ async def hello(ctx):
     await ctx.send(f'Hi! I am a bot {bot.user}!')
 
 @bot.command()
-async def repeat(ctx, times: int, content='repeating...'):
+async def repeat(ctx, times: 3, content='repeating...'):
     """Repeats a message multiple times."""
     for i in range(times):
         await ctx.send(content)
@@ -32,5 +35,31 @@ async def heh(ctx, count_heh = 5):
 @bot.command()
 async def passw(ctx, panjang = 5):
     await ctx.send(gen_pass(panjang))
+
+@bot.command()
+async def mem(ctx):
+    img_name = random.choice(os.listdir('images'))
+    with open(f'images/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+@bot.command()
+async def anim(ctx):
+    anim_name = random.choice(os.listdir('animals'))
+    with open(f'animals/{anim_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+    
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+@bot.command('duck')
+async def duck(ctx):
+    '''Setelah kita memanggil perintah bebek (duck), program akan memanggil fungsi get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
 
 bot.run(token)
