@@ -43,9 +43,21 @@ async def mem(ctx):
         picture = discord.File(f)
     await ctx.send(file=picture)
 
+animal = {
+    'animal1.jpg': 5, #common
+    'animal2.jpg': 2, #uncommon
+    'animal3.jpg': 1  #rare
+}
+
+def get_weighted_random_meme(animal):
+    weighted_memes = []
+    for animal, rarity in animal.items():
+        weighted_memes.extend([animal] * rarity)
+    return random.choice(weighted_memes)
+
 @bot.command()
 async def anim(ctx):
-    anim_name = random.choice(os.listdir('animals'))
+    anim_name = get_weighted_random_meme(animal)
     with open(f'animals/{anim_name}', 'rb') as f:
         picture = discord.File(f)
     await ctx.send(file=picture)
